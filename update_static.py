@@ -434,6 +434,9 @@ class StaticUpdater:
                     "dps": level_data.get("DPS", 0) or level_data.get("Damage", 0),
                 }
 
+                if "StrengthWeight" in level_data:
+                    hold_level_data["strength_weight"] = level_data["StrengthWeight"]
+
                 if "AltBuildResource" in level_data:
                     # a wall specific thing since they can use gold + elixir at certain levels
                     hold_level_data["alt_upgrade_resource"] = self._parse_resource(resource=level_data["AltBuildResource"])
@@ -470,6 +473,7 @@ class StaticUpdater:
                                 "info": weapon_data.get("InfoTID"),
                             },
                             "upgrade_resource": self._parse_resource(resource=building_data.get("BuildResource")),
+                            "strength_weight": level_data.get("StrengthWeight", 0),
                             "levels": []
                         }
                         for weapon_level, weapon_level_data in weapon_data.items():
@@ -632,6 +636,7 @@ class StaticUpdater:
                 "attack_speed": troop_data.get("AttackSpeed", 0),
                 "attack_range": troop_data.get("AttackRange", 0),
                 "housing_space": troop_data.get("HousingSpace"),
+
                 "village": "home" if not village_type else "builderBase",
             }
             is_super_troop = troop_data.get("EnabledBySuperLicence", False)
@@ -677,6 +682,8 @@ class StaticUpdater:
                     "upgrade_cost": level_data.get("UpgradeCost", 0),
                     "required_lab_level": required_lab_level,
                     "required_townhall": required_townhall,
+
+                    "strength_weight": level_data.get("StrengthWeight", 0),
                 }
                 hold_data["levels"].append(new_level_data)
 
@@ -783,6 +790,8 @@ class StaticUpdater:
                     "upgrade_cost": level_data.get("UpgradeCost", 0),
                     "required_lab_level": level_data.get("LaboratoryLevel"),
                     "required_townhall": level_data.get("UpgradeLevelByTH") or self.lab_to_townhall[level_data.get("LaboratoryLevel")],
+                    "strength_weight": level_data.get("StrengthWeight", 0),
+
                 }
                 hold_data["levels"].append(new_level_data)
 
@@ -837,6 +846,8 @@ class StaticUpdater:
 
                     "required_townhall": level_data.get("RequiredTownHallLevel"),
                     "required_hero_tavern_level": level_data.get("RequiredHeroTavernLevel"),
+
+                    "strength_weight": level_data.get("StrengthWeight", 0),
                 }
                 hold_data["levels"].append(new_level_data)
 
@@ -889,6 +900,8 @@ class StaticUpdater:
                     "upgrade_cost": level_data.get("UpgradeCost", 0),
                     "required_pet_house_level": level_data.get("LaboratoryLevel"),
                     "required_townhall": self.pethouse_to_townhall[level_data.get("LaboratoryLevel")],
+
+                    "strength_weight": level_data.get("StrengthWeight", 0),
                 }
                 hold_data["levels"].append(new_level_data)
 
@@ -951,6 +964,7 @@ class StaticUpdater:
                     "heal_on_activation" : level_data.get("HealOnActivation", 0),
                     "required_blacksmith_level": level_data.get("RequiredBlacksmithLevel"),
                     "required_townhall": self.smithy_to_townhall[level_data.get("RequiredBlacksmithLevel")],
+                    "strength_weight": level_data.get("StrengthWeight", 0),
                     "upgrade_cost": {
                         "shiny_ore": shiny_ore,
                         "glowy_ore": glowy_ore,
@@ -1030,6 +1044,7 @@ class StaticUpdater:
                     "build_time": upgrade_time_seconds,
                     "required_townhall": level_data.get("TownHallLevel"),
                     "damage": level_data.get("Damage", 0),
+                    "strength_weight": level_data.get("StrengthWeight", 0),
                 })
 
             new_trap_data.append(hold_data)
