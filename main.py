@@ -48,7 +48,6 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         logger.error(f"Failed to load metadata: {e}")
 
     yield
-    # Clean up if needed
 
 app = FastAPI(middleware=middleware, lifespan=lifespan)
 
@@ -56,17 +55,14 @@ app = FastAPI(middleware=middleware, lifespan=lifespan)
 templates = Jinja2Templates(directory="templates")
 
 BASE_DIR = Path(__file__).resolve().parents[0]
-# Use /app/cache in container, local .cache directory otherwise
-CACHE_DIR = Path("/app/cache") if Path("/app").exists() and Path("/app").is_dir() else BASE_DIR / ".cache"
+CACHE_DIR = BASE_DIR / ".cache"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
-ASSETS_DIR = CACHE_DIR
 SUPPORTED_FORMATS = ["jpg", "jpeg", "png", "webp"]
 GITHUB_RAW_BASE = "https://raw.githubusercontent.com/ClashKingInc/ClashKingAssets/main/assets"
 
 async def download_from_github(file_path: str) -> bytes:
     url = f"{GITHUB_RAW_BASE}/{file_path}"
-    timeout = aiohttp.ClientTimeout(total=30.0)
-    async with aiohttp.ClientSession(timeout=timeout) as session:
+    async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
             if response.status == 200:
                 return await response.read()
@@ -79,7 +75,6 @@ async def get_cached_file(file_path: str) -> Path:
         return local_asset
 
     cached_file = CACHE_DIR / file_path
-    
     if cached_file.is_file():
         return cached_file
     
@@ -99,31 +94,19 @@ async def find_alternative_format(relative_path: Path):
             continue
     return None
 
-
 def convert_image(image_path: Path, target_format: str) -> io.BytesIO:
     with Image.open(image_path) as img:
         img_io = io.BytesIO()
-
-        # Normalize the target format
         target_format = target_format.lower()
-        if target_format == 'jpg':
-            target_format = 'jpeg'
+        if target_format == 'jpg': target_format = 'jpeg'
 
-        # For JPEG, handle transparency by flattening onto a white background
         if img.mode in ('RGBA', 'LA', 'P') and target_format == 'jpeg':
-            # Create a white background image
             background = Image.new('RGB', img.size, (255, 255, 255))
-            # Convert image to RGBA if it's not already
             img = img.convert('RGBA')
-            # Paste the image onto the white background, using the alpha channel as a mask
-            background.paste(img, mask=img.split()[3])  # 3 is the alpha channel
+            background.paste(img, mask=img.split()[3])
             img = background
-
-        # Convert any remaining modes to RGB for JPEG
         elif target_format == 'jpeg':
             img = img.convert('RGB')
-
-        # Convert 1 mode to L (grayscale) for PNG/WebP
         elif img.mode == '1' and target_format in ('png', 'webp'):
             img = img.convert('L')
 
@@ -131,13 +114,11 @@ def convert_image(image_path: Path, target_format: str) -> io.BytesIO:
         img_io.seek(0)
         return img_io
 
-
 @app.middleware("http")
 async def add_cache_control_header(request: Request, call_next: Callable):
     response = await call_next(request)
     response.headers["Cache-Control"] = "public, max-age=2592000"
     return response
-
 
 @app.get("/")
 async def gallery(request: Request):
@@ -152,35 +133,21 @@ async def gallery(request: Request):
 
 @app.get("/{file_path:path}", name="Get a file")
 async def serve_file(file_path: str):
-    # Strip leading slash if any
     file_path = file_path.lstrip("/")
-    # Prevent path traversal
-    if ".." in file_path or file_path.startswith("/"):
+    if ".." in file_path:
         raise HTTPException(status_code=403, detail="Access forbidden")
 
     try:
-        # Try to get the file from cache or download it
         cached_file = await get_cached_file(file_path)
         return FileResponse(cached_file)
     except HTTPException:
-        # File doesn't exist in the exact format, try alternative formats
         requested_path = Path(file_path)
         alternative_file = await find_alternative_format(requested_path)
-        
         if alternative_file:
-            # Convert to the requested format
             converted_image = convert_image(alternative_file, requested_path.suffix.lstrip('.'))
             return StreamingResponse(converted_image, media_type=f"image/{requested_path.suffix.lstrip('.')}")
-        
         raise HTTPException(status_code=404, detail="File not found")
-
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(
-        "main:app",    # <— module path, not the object
-        host="0.0.0.0",
-        port=8000,
-        reload=True,          # enable code-watching
-        workers=1             # you can bump this >1 if you like
-    )
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, workers=1)

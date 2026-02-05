@@ -1095,6 +1095,12 @@
     "1000102": {
       "name": "Super Wizard Tower",
       "levels": {}
+    },
+    "2199014": {
+      "name": "Defense Wall",
+      "levels": {
+        "19": "/home-base/buildings/defense-wall/defense-wall-19-3.png"
+      }
     }
   },
   "seasonal_defenses": {

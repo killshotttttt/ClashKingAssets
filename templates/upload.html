@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-4xl mx-auto py-10 px-6">
+    <div class="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
+        <h1 class="text-4xl font-black text-gray-900 mb-2">Asset Lab</h1>
+        <p class="text-gray-500 mb-8 font-medium">Visual manager for ClashKing image processing.</p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            <!-- Left: Drop Zone -->
+            <div id="dropZone" class="relative group cursor-pointer">
+                <div
+                    class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000">
+                </div>
+                <div
+                    class="relative bg-white border-2 border-dashed border-gray-200 rounded-2xl p-12 text-center hover:border-indigo-400 transition-all flex flex-col items-center justify-center min-h-[400px]">
+                    <div id="previewContainer" class="hidden mb-6 w-full flex flex-col items-center">
+                        <img id="imgPreview" src="#"
+                            class="max-h-64 rounded-lg shadow-lg object-contain bg-slate-50 p-2 border border-gray-100 mb-4 animate-in fade-in zoom-in duration-300">
+                        <p id="fileNameLabel" class="text-sm font-semibold text-gray-900 truncate max-w-full px-4"></p>
+                    </div>
+
+                    <div id="uploadPrompt" class="flex flex-col items-center">
+                        <div class="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mb-6">
+                            <svg class="w-10 h-10 text-indigo-600" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M12 4v16m8-8H4"></path>
+                            </svg>
+                        </div>
+                        <p class="text-lg font-bold text-gray-900">Drop asset here</p>
+                        <p class="text-sm text-gray-400 mt-1">or click to browse your files</p>
+                    </div>
+                    <input type="file" id="fileInput" class="hidden" accept="image/png">
+                </div>
+            </div>
+
+            <!-- Right: Meta Data -->
+            <div class="flex flex-col justify-center space-y-6">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Category
+                            Type</label>
+                        <select id="assetType"
+                            class="w-full bg-gray-50 border-0 rounded-xl px-4 py-3 text-gray-900 focus:ring-2 focus:ring-indigo-500 font-semibold appearance-none transition-all">
+                            {% for section in images.keys() %}
+                            <option value="{{ section }}" {% if section=='buildings' %}selected{% endif %}>{{
+                                section.replace('_',' ').title() }}</option>
+                            {% endfor %}
+                            <option value="custom">Custom (New Section)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Asset
+                            Name</label>
+                        <input type="text" id="assetName" list="nameList" placeholder="e.g. Town Hall"
+                            class="w-full bg-gray-50 border-0 rounded-xl px-4 py-3 text-gray-900 focus:ring-2 focus:ring-indigo-500 font-semibold transition-all">
+                        <datalist id="nameList"></datalist>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Slug
+                                (Filename)</label>
+                            <input type="text" id="assetSlug" placeholder="e.g. town-hall-18"
+                                class="w-full bg-gray-50 border-0 rounded-xl px-4 py-3 text-gray-900 focus:ring-2 focus:ring-indigo-500 font-semibold transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Level
+                                (Optional)</label>
+                            <input type="number" id="assetLevel" placeholder="18"
+                                class="w-full bg-gray-50 border-0 rounded-xl px-4 py-3 text-gray-900 focus:ring-2 focus:ring-indigo-500 font-semibold transition-all">
+                        </div>
+                    </div>
+                </div>
+
+                <button id="processBtn" disabled
+                    class="w-full py-4 bg-gray-100 text-gray-400 font-black rounded-2xl transition-all uppercase tracking-widest hover:translate-y-[-2px] active:scale-95 disabled:hover:translate-y-0 disabled:active:scale-100">
+                    Process Asset
+                </button>
+
+                <div id="statusMsg" class="text-sm font-medium text-center opacity-0 transition-opacity">Asset processed
+                    successfully!</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const images = {{ images | tojson }};
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const imgPreview = document.getElementById('imgPreview');
+    const previewContainer = document.getElementById('previewContainer');
+    const uploadPrompt = document.getElementById('uploadPrompt');
+    const fileNameLabel = document.getElementById('fileNameLabel');
+    const processBtn = document.getElementById('processBtn');
+
+    // Selects
+    const assetType = document.getElementById('assetType');
+    const assetName = document.getElementById('assetName');
+    const assetSlug = document.getElementById('assetSlug');
+    const assetLevel = document.getElementById('assetLevel');
+    const nameList = document.getElementById('nameList');
+    const statusMsg = document.getElementById('statusMsg');
+
+    // Update name list based on type
+    const updateNames = () => {
+        const type = assetType.value;
+        nameList.innerHTML = '';
+        if (images[type]) {
+            Object.values(images[type]).forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.name;
+                nameList.appendChild(opt);
+            });
+        }
+    };
+    assetType.onchange = updateNames;
+    updateNames();
+
+    // Auto-detect metadata from file name
+    const detectMeta = (filename) => {
+        // e.g. gold_storage_lvl19_0.png
+        const name = filename.replace('.png', '').replace(/_lvl\d+.*$/, '').replace(/_/g, ' ');
+        const levelMatch = filename.match(/lvl(\d+)/);
+
+        // Match name in current dictionary
+        const currentType = assetType.value;
+        const entry = Object.values(images[currentType] || {}).find(e => e.name.toLowerCase() === name.toLowerCase());
+
+        if (entry) {
+            assetName.value = entry.name;
+        } else {
+            assetName.value = name.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        }
+
+        if (levelMatch) assetLevel.value = levelMatch[1];
+        assetSlug.value = filename.replace('.png', '').replace('_lvl', '-').replace(/_\d+$/, '').replace(/_/g, '-').toLowerCase();
+
+        validate();
+    };
+
+    const validate = () => {
+        const isValid = fileInput.files.length > 0 && assetType.value && assetName.value && assetSlug.value;
+        processBtn.disabled = !isValid;
+        processBtn.className = isValid
+            ? "w-full py-4 bg-indigo-600 text-white font-black rounded-2xl shadow-xl shadow-indigo-200 transition-all uppercase tracking-widest hover:translate-y-[-2px] active:scale-95"
+            : "w-full py-4 bg-gray-100 text-gray-400 font-black rounded-2xl transition-all uppercase tracking-widest";
+    };
+
+    [assetName, assetSlug, assetLevel].forEach(el => el.oninput = validate);
+
+    // Drop Zone Events
+    dropZone.onclick = () => fileInput.click();
+    dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('border-indigo-500'); };
+    dropZone.ondragleave = () => dropZone.classList.remove('border-indigo-500');
+    dropZone.ondrop = (e) => {
+        e.preventDefault();
+        fileInput.files = e.dataTransfer.files;
+        handleFile();
+    };
+    fileInput.onchange = handleFile;
+
+    function handleFile() {
+        const file = fileInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imgPreview.src = e.target.result;
+                previewContainer.classList.remove('hidden');
+                uploadPrompt.classList.add('hidden');
+                fileNameLabel.textContent = file.name;
+                detectMeta(file.name);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    processBtn.onclick = async () => {
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+        formData.append('asset_type', assetType.value);
+        formData.append('asset_name', assetName.value);
+        formData.append('slug', assetSlug.value);
+        if (assetLevel.value) formData.append('level', assetLevel.value);
+
+        processBtn.disabled = true;
+        processBtn.textContent = "Processing...";
+
+        try {
+            const resp = await fetch('/upload', { method: 'POST', body: formData });
+            const result = await resp.json();
+            if (result.status === 'success') {
+                statusMsg.textContent = `Successfully saved as ${result.path}`;
+                statusMsg.className = "text-sm font-bold text-green-500 text-center animate-bounce";
+                statusMsg.style.opacity = 1;
+                setTimeout(() => { location.reload(); }, 2000);
+            } else {
+                alert("Error: " + result.message);
+            }
+        } catch (e) {
+            alert("Upload failed: " + e);
+        } finally {
+            processBtn.textContent = "Process Asset";
+            validate();
+        }
+    };
+</script>
+{% endblock %}
