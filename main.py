@@ -3,12 +3,17 @@ from fastapi.responses import StreamingResponse, FileResponse
 from pathlib import Path
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
-from typing import Callable
+from typing import Callable, AsyncGenerator
 from PIL import Image
 import io
 from fastapi.templating import Jinja2Templates
 import json
 import aiohttp
+import contextlib
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("assets")
 
 middleware = [
     Middleware(
@@ -19,7 +24,33 @@ middleware = [
     )
 ]
 
-app = FastAPI(middleware=middleware)
+images = {}
+translations = {}
+
+@contextlib.asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    global images, translations
+    
+    # Load image_map.json
+    try:
+        image_map_path = await get_cached_file("image_map.json")
+        with open(image_map_path, "r", encoding="utf-8") as f:
+            images = json.load(f)
+        
+        # Load translations.json
+        translations_path = await get_cached_file("translations.json")
+        with open(translations_path, "r", encoding="utf-8") as f:
+            translations = json.load(f)
+            
+        count = sum(len(v) for v in images.values() if isinstance(v, dict))
+        logger.info(f"Loaded {count} image entries from {image_map_path}")
+    except Exception as e:
+        logger.error(f"Failed to load metadata: {e}")
+
+    yield
+    # Clean up if needed
+
+app = FastAPI(middleware=middleware, lifespan=lifespan)
 
 # Templates live in `templates/`
 templates = Jinja2Templates(directory="templates")
@@ -107,23 +138,6 @@ async def add_cache_control_header(request: Request, call_next: Callable):
     response.headers["Cache-Control"] = "public, max-age=2592000"
     return response
 
-# Load metadata from GitHub on startup
-images = {}
-translations = {}
-
-@app.on_event("startup")
-async def load_metadata():
-    global images, translations
-    
-    # Load image_map.json
-    image_map_path = await get_cached_file("image_map.json")
-    with open(image_map_path, "r", encoding="utf-8") as f:
-        images = json.load(f)
-    
-    # Load translations.json
-    translations_path = await get_cached_file("translations.json")
-    with open(translations_path, "r", encoding="utf-8") as f:
-        translations = json.load(f)
 
 @app.get("/")
 async def gallery(request: Request):
@@ -138,6 +152,8 @@ async def gallery(request: Request):
 
 @app.get("/{file_path:path}", name="Get a file")
 async def serve_file(file_path: str):
+    # Strip leading slash if any
+    file_path = file_path.lstrip("/")
     # Prevent path traversal
     if ".." in file_path or file_path.startswith("/"):
         raise HTTPException(status_code=403, detail="Access forbidden")

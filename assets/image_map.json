@@ -126,7 +126,8 @@
         "15": "/home-base/buildings/gold-storage/gold-storage-15.png",
         "16": "/home-base/buildings/gold-storage/gold-storage-16.png",
         "17": "/home-base/buildings/gold-storage/gold-storage-17.png",
-        "18": "/home-base/buildings/gold-storage/gold-storage-18.png"
+        "18": "/home-base/buildings/gold-storage/gold-storage-18.png",
+        "19": "/home-base/buildings/gold-storage/gold-storage-19.png"
       }
     },
     "1000006": {
@@ -149,7 +150,8 @@
         "15": "/home-base/buildings/barracks/barracks-15.png",
         "16": "/home-base/buildings/barracks/barracks-16.png",
         "17": "/home-base/buildings/barracks/barracks-17.png",
-        "18": "/home-base/buildings/barracks/barracks-18.png"
+        "18": "/home-base/buildings/barracks/barracks-18.png",
+        "19": "/home-base/buildings/barracks/barracks-19.png"
       }
     },
     "1000007": {
@@ -286,7 +288,8 @@
         "12": "/home-base/buildings/air-defense/air-defense-12.png",
         "13": "/home-base/buildings/air-defense/air-defense-13.png",
         "14": "/home-base/buildings/air-defense/air-defense-14.png",
-        "15": "/home-base/buildings/air-defense/air-defense-15.png"
+        "15": "/home-base/buildings/air-defense/air-defense-15.png",
+        "16": "/home-base/buildings/air-defense/air-defense-16.png"
       }
     },
     "1000013": {
@@ -326,7 +329,8 @@
         "10": "/home-base/buildings/clan-castle/clan-castle-10.png",
         "11": "/home-base/buildings/clan-castle/clan-castle-11.png",
         "12": "/home-base/buildings/clan-castle/clan-castle-12.png",
-        "13": "/home-base/buildings/clan-castle/clan-castle-13.png"
+        "13": "/home-base/buildings/clan-castle/clan-castle-13.png",
+        "14": "/home-base/buildings/clan-castle/clan-castle-14.png"
       }
     },
     "1000015": {
@@ -1081,6 +1085,16 @@
       "levels": {
         "1": "/home-base/buildings/crafting-station/crafting-station-1.png"
       }
+    },
+    "1000086": {
+      "name": "Revenge Tower",
+      "levels": {
+        "2": "/home-base/buildings/revenge-tower/revenge-tower-2.png"
+      }
+    },
+    "1000102": {
+      "name": "Super Wizard Tower",
+      "levels": {}
     }
   },
   "seasonal_defenses": {
@@ -1772,6 +1786,21 @@
       "name": "The Disarmer",
       "icon": "/home-base/troops/the-disarmer/the-disarmer-icon.png",
       "character": "/home-base/troops/the-disarmer/the-disarmer-character.png"
+    },
+    "4000042": {
+      "name": "Night Witch",
+      "icon": "",
+      "character": ""
+    },
+    "4000167": {
+      "name": "Meteor Golem",
+      "icon": "",
+      "character": ""
+    },
+    "4000177": {
+      "name": "Meteor Golem",
+      "icon": "",
+      "character": ""
     }
   },
   "heroes": {
@@ -1995,6 +2024,18 @@
     },
     "90000048": {
       "name": "Action Figure",
+      "icon": ""
+    },
+    "90000049": {
+      "name": "Meteor Staff",
+      "icon": ""
+    },
+    "90000050": {
+      "name": "Frost Flake",
+      "icon": ""
+    },
+    "90000051": {
+      "name": "Stick Horse",
       "icon": ""
     }
   },
@@ -2597,6 +2638,82 @@
     },
     "18000185": {
       "name": "Justice Crown",
+      "icon": ""
+    },
+    "18000186": {
+      "name": "Cosmic Lantern",
+      "icon": ""
+    },
+    "18000187": {
+      "name": "Electro Skull",
+      "icon": ""
+    },
+    "18000188": {
+      "name": "Meteor Observer",
+      "icon": ""
+    },
+    "18000189": {
+      "name": "Fortune Printer",
+      "icon": ""
+    },
+    "18000190": {
+      "name": "Boom Box",
+      "icon": ""
+    },
+    "18000191": {
+      "name": "Cursed Tome",
+      "icon": ""
+    },
+    "18000192": {
+      "name": "Eagle Monument",
+      "icon": ""
+    },
+    "18000193": {
+      "name": "The Champion Statue",
+      "icon": ""
+    },
+    "18000194": {
+      "name": "The Master Statue",
+      "icon": ""
+    },
+    "18000195": {
+      "name": "The Contender Statue",
+      "icon": ""
+    },
+    "18000196": {
+      "name": "Smoky Stove",
+      "icon": ""
+    },
+    "18000197": {
+      "name": "Wish Lamp",
+      "icon": ""
+    },
+    "18000198": {
+      "name": "Lucky Shoe",
+      "icon": ""
+    },
+    "18000199": {
+      "name": "Brawny Battleaxe",
+      "icon": ""
+    },
+    "18000200": {
+      "name": "Crafted Statue",
+      "icon": ""
+    },
+    "18000201": {
+      "name": "Handsome Scroll",
+      "icon": ""
+    },
+    "18000202": {
+      "name": "Flame Horse",
+      "icon": ""
+    },
+    "18000203": {
+      "name": "Hungry Hound",
+      "icon": ""
+    },
+    "18000204": {
+      "name": "Frozen Stone",
       "icon": ""
     }
   },
@@ -4381,6 +4498,84 @@
       },
       "icon": "/home-base/skins/minion-cop/minion-cop-icon.png",
       "name": "Minion Cop"
+    }
+  },
+  "spells": {
+    "26000000": {
+      "name": "Lightning Spell",
+      "icon": ""
+    },
+    "26000001": {
+      "name": "Healing Spell",
+      "icon": ""
+    },
+    "26000002": {
+      "name": "Rage Spell",
+      "icon": ""
+    },
+    "26000003": {
+      "name": "Jump Spell",
+      "icon": ""
+    },
+    "26000005": {
+      "name": "Freeze Spell",
+      "icon": ""
+    },
+    "26000006": {
+      "name": "Santa's Surprise",
+      "icon": ""
+    },
+    "26000009": {
+      "name": "Poison Spell",
+      "icon": ""
+    },
+    "26000010": {
+      "name": "Earthquake Spell",
+      "icon": ""
+    },
+    "26000011": {
+      "name": "Haste Spell",
+      "icon": ""
+    },
+    "26000016": {
+      "name": "Clone Spell",
+      "icon": ""
+    },
+    "26000017": {
+      "name": "Skeleton Spell",
+      "icon": ""
+    },
+    "26000028": {
+      "name": "Bat Spell",
+      "icon": ""
+    },
+    "26000035": {
+      "name": "Invisibility Spell",
+      "icon": ""
+    },
+    "26000053": {
+      "name": "Recall Spell",
+      "icon": ""
+    },
+    "26000070": {
+      "name": "Overgrowth Spell",
+      "icon": ""
+    },
+    "26000073": {
+      "name": "Bag of Frostmites",
+      "icon": ""
+    },
+    "26000098": {
+      "name": "Revive Spell",
+      "icon": ""
+    },
+    "26000109": {
+      "name": "Ice Block Spell",
+      "icon": ""
+    },
+    "26000120": {
+      "name": "Totem Spell",
+      "icon": ""
     }
   }
 }

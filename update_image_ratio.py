@@ -102,29 +102,42 @@ def main():
         if args.level:
             # Building level logic
             out_filename = f"{args.slug}.png"
-            rel_output_path = f"/{clean_input}/{out_filename}"
+            
+            # Use type and slug for a clean relative path instead of relying on input_path
+            # Most ClashKing assets follow /base-type/type/name/slug.png
+            # We'll try to guess base-type or default to home-base
+            base_type = "home-base"
+            if args.type in ["builder-base", "capital-base"]:
+                base_type = args.type
+            
+            # Format: /home-base/buildings/town-hall/town-hall-18.png
+            folder_name = args.name.lower().replace(" ", "-").replace(".", "")
+            rel_output_path = f"/{base_type}/{args.type}/{folder_name}/{out_filename}"
             
             if "levels" not in asset_entry:
                 asset_entry["levels"] = {}
             asset_entry["levels"][str(args.level)] = rel_output_path
         else:
             # Non-level logic (skins, decorations, etc.)
+            base_type = "home-base"
+            folder_name = args.name.lower().replace(" ", "-").replace(".", "")
+            
             if args.type == "skins":
                 if "poses" not in asset_entry:
                     asset_entry["poses"] = {}
                 
                 if processed_count == 0:
                      out_filename = f"{args.slug}.png"
-                     rel_output_path = f"/{clean_input}/{out_filename}"
+                     rel_output_path = f"/{base_type}/{args.type}/{folder_name}/{out_filename}"
                      asset_entry["icon"] = rel_output_path
                 else:
                      out_filename = f"{args.slug}-pose-{processed_count}.png"
-                     rel_output_path = f"/{clean_input}/{out_filename}"
+                     rel_output_path = f"/{base_type}/{args.type}/{folder_name}/{out_filename}"
                      asset_entry["poses"][str(processed_count)] = rel_output_path
             else:
                 # Default (e.g. decorations)
                 out_filename = f"{args.slug}.png"
-                rel_output_path = f"/{clean_input}/{out_filename}"
+                rel_output_path = f"/{base_type}/{args.type}/{folder_name}/{out_filename}"
                 asset_entry["icon"] = rel_output_path
 
         output_full_path = os.path.join("assets", rel_output_path.lstrip("/"))
