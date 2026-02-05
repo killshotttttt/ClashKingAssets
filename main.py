@@ -42,6 +42,11 @@ async def download_from_github(file_path: str) -> bytes:
             raise HTTPException(status_code=404, detail=f"File not found on GitHub: {file_path}")
 
 async def get_cached_file(file_path: str) -> Path:
+    # Check local assets first
+    local_asset = BASE_DIR / "assets" / file_path
+    if local_asset.is_file():
+        return local_asset
+
     cached_file = CACHE_DIR / file_path
     
     if cached_file.is_file():
@@ -159,7 +164,7 @@ if __name__ == "__main__":
     uvicorn.run(
         "main:app",    # <— module path, not the object
         host="0.0.0.0",
-        port=80,
+        port=8000,
         reload=True,          # enable code-watching
         workers=1             # you can bump this >1 if you like
     )
