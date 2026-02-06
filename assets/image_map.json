@@ -82,7 +82,8 @@
         "15": "/home-base/buildings/elixir-storage/elixir-storage-15.png",
         "16": "/home-base/buildings/elixir-storage/elixir-storage-16.png",
         "17": "/home-base/buildings/elixir-storage/elixir-storage-17.png",
-        "18": "/home-base/buildings/elixir-storage/elixir-storage-18.png"
+        "18": "/home-base/buildings/elixir-storage/elixir-storage-18.png",
+        "19": "/home-base/buildings/elixir-storage/elixir-storage-level19.png"
       }
     },
     "1000004": {
@@ -171,7 +172,8 @@
         "12": "/home-base/buildings/laboratory/laboratory-12.png",
         "13": "/home-base/buildings/laboratory/laboratory-13.png",
         "14": "/home-base/buildings/laboratory/laboratory-14.png",
-        "15": "/home-base/buildings/laboratory/laboratory-15.png"
+        "15": "/home-base/buildings/laboratory/laboratory-15.png",
+        "16": "/home-base/buildings/laboratory/laboratory-16.png"
       }
     },
     "1000008": {
@@ -246,7 +248,8 @@
         "15": "/home-base/buildings/wall/wall-15.png",
         "16": "/home-base/buildings/wall/wall-16.png",
         "17": "/home-base/buildings/wall/wall-17.png",
-        "18": "/home-base/buildings/wall/wall-18.png"
+        "18": "/home-base/buildings/wall/wall-18.png",
+        "19": "/home-base/buildings/wall/defense-wall-20.png"
       }
     },
     "1000011": {
@@ -376,7 +379,8 @@
         "5": "/home-base/buildings/spell-factory/spell-factory-5.png",
         "6": "/home-base/buildings/spell-factory/spell-factory-6.png",
         "7": "/home-base/buildings/spell-factory/spell-factory-7.png",
-        "8": "/home-base/buildings/spell-factory/spell-factory-8.png"
+        "8": "/home-base/buildings/spell-factory/spell-factory-8.png",
+        "9": "/home-base/buildings/spell-factory/spell-factory-9.png"
       }
     },
     "1000021": {
@@ -425,7 +429,8 @@
         "9": "/home-base/buildings/dark-elixir-storage/dark-elixir-storage-9.png",
         "10": "/home-base/buildings/dark-elixir-storage/dark-elixir-storage-10.png",
         "11": "/home-base/buildings/dark-elixir-storage/dark-elixir-storage-11.png",
-        "12": "/home-base/buildings/dark-elixir-storage/dark-elixir-storage-12.png"
+        "12": "/home-base/buildings/dark-elixir-storage/dark-elixir-storage-12.png",
+        "13": "/home-base/buildings/dark-elixir-storage/darkelixir-storage-level13.png"
       }
     },
     "1000026": {
@@ -511,7 +516,8 @@
         "9": "/home-base/buildings/bomb-tower/bomb-tower-9.png",
         "10": "/home-base/buildings/bomb-tower/bomb-tower-10.png",
         "11": "/home-base/buildings/bomb-tower/bomb-tower-11.png",
-        "12": "/home-base/buildings/bomb-tower/bomb-tower-12.png"
+        "12": "/home-base/buildings/bomb-tower/bomb-tower-12.png",
+        "13": "/home-base/buildings/bomb-tower/bomb-tower-13.png"
       }
     },
     "1000033": {
@@ -968,7 +974,8 @@
         "8": "/home-base/buildings/hero-hall/hero-hall-8.png",
         "9": "/home-base/buildings/hero-hall/hero-hall-9.png",
         "10": "/home-base/buildings/hero-hall/hero-hall-10.png",
-        "11": "/home-base/buildings/hero-hall/hero-hall-11.png"
+        "11": "/home-base/buildings/hero-hall/hero-hall-11.png",
+        "12": "/home-base/buildings/hero-hall/hero-inn-12.png"
       }
     },
     "1000072": {
@@ -1015,7 +1022,9 @@
         "1": "/home-base/buildings/multi-gear-tower/multi-gear-tower-1.png",
         "1b": "/home-base/buildings/multi-gear-tower/multi-gear-tower-1b.png",
         "2": "/home-base/buildings/multi-gear-tower/multi-gear-tower-2.png",
-        "2b": "/home-base/buildings/multi-gear-tower/multi-gear-tower-2b.png"
+        "2b": "/home-base/buildings/multi-gear-tower/multi-gear-tower-2b.png",
+        "3": "/home-base/buildings/multi-gear-tower/merged-cat-archer-3.png",
+        "4": "/home-base/buildings/multi-gear-tower/merged-cat-cannon-3.png"
       }
     },
     "1000080": {
@@ -1056,7 +1065,8 @@
       "levels": {
         "1": "/home-base/buildings/multi-archer-tower/multi-archer-tower-1.png",
         "2": "/home-base/buildings/multi-archer-tower/multi-archer-tower-2.png",
-        "3": "/home-base/buildings/multi-archer-tower/multi-archer-tower-3.png"
+        "3": "/home-base/buildings/multi-archer-tower/multi-archer-tower-3.png",
+        "4": "/home-base/buildings/multi-archer-tower/multi-archer-tower-4.png"
       }
     },
     "1000085": {
@@ -1064,7 +1074,8 @@
       "levels": {
         "1": "/home-base/buildings/ricochet-cannon/ricochet-cannon-1.png",
         "2": "/home-base/buildings/ricochet-cannon/ricochet-cannon-2.png",
-        "3": "/home-base/buildings/ricochet-cannon/ricochet-cannon-3.png"
+        "3": "/home-base/buildings/ricochet-cannon/ricochet-cannon-3.png",
+        "4": "/home-base/buildings/ricochet-cannon/ricochet-cannon-4.png"
       }
     },
     "1000089": {
@@ -1099,7 +1110,7 @@
     "2199014": {
       "name": "Defense Wall",
       "levels": {
-        "19": "/home-base/buildings/defense-wall/defense-wall-19-3.png"
+        "19": "/home-base/buildings/defense-wall/defense-wall-20.png"
       }
     }
   },

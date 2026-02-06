@@ -87,7 +87,7 @@
 </div>
 
 <script>
-    const images = {{ images | tojson }};
+    const imagesData = {{ images | tojson }};
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('fileInput');
     const imgPreview = document.getElementById('imgPreview');
@@ -108,36 +108,79 @@
     const updateNames = () => {
         const type = assetType.value;
         nameList.innerHTML = '';
-        if (images[type]) {
-            Object.values(images[type]).forEach(item => {
-                const opt = document.createElement('option');
-                opt.value = item.name;
-                nameList.appendChild(opt);
-            });
-        }
+        const items = Object.values(imagesData[type] || {});
+        items.forEach(item => {
+            const opt = document.createElement('option');
+            opt.value = item.name;
+            nameList.appendChild(opt);
+        });
+
+        // Trigger auto-level if the selected name already exists in this type
+        const entry = items.find(e => e.name.toLowerCase() === assetName.value.toLowerCase());
+        if (entry) updateAutoLevel(entry);
     };
+
     assetType.onchange = updateNames;
     updateNames();
 
     // Auto-detect metadata from file name
     const detectMeta = (filename) => {
         // e.g. gold_storage_lvl19_0.png
-        const name = filename.replace('.png', '').replace(/_lvl\d+.*$/, '').replace(/_/g, ' ');
-        const levelMatch = filename.match(/lvl(\d+)/);
+        const cleanName = filename.replace('.png', '').replace(/(_lvl\d+.*$)/i, '').replace(/_/g, ' ');
+        const levelMatch = filename.match(/lvl(\d+)/i);
 
-        // Match name in current dictionary
+        // Try to find the closest matching asset name in the current type
         const currentType = assetType.value;
-        const entry = Object.values(images[currentType] || {}).find(e => e.name.toLowerCase() === name.toLowerCase());
+        const entries = Object.values(imagesData[currentType] || {});
 
-        if (entry) {
-            assetName.value = entry.name;
-        } else {
-            assetName.value = name.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        let foundEntry = entries.find(e => e.name.toLowerCase() === cleanName.toLowerCase());
+
+        // If no exact match, try partial match
+        if (!foundEntry) {
+            foundEntry = entries.find(e => e.name.toLowerCase().includes(cleanName.toLowerCase()) || cleanName.toLowerCase().includes(e.name.toLowerCase()));
         }
 
-        if (levelMatch) assetLevel.value = levelMatch[1];
-        assetSlug.value = filename.replace('.png', '').replace('_lvl', '-').replace(/_\d+$/, '').replace(/_/g, '-').toLowerCase();
+        if (foundEntry) {
+            assetName.value = foundEntry.name;
+            updateAutoLevel(foundEntry);
+        } else {
+            assetName.value = cleanName.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            if (levelMatch) assetLevel.value = levelMatch[1];
+        }
 
+        updateSlug();
+        validate();
+    };
+
+    const updateAutoLevel = (entry) => {
+        if (entry && entry.levels) {
+            const levels = Object.keys(entry.levels).map(l => parseInt(l)).filter(l => !isNaN(l));
+            if (levels.length > 0) {
+                assetLevel.value = Math.max(...levels) + 1;
+            } else {
+                assetLevel.value = 1;
+            }
+        } else {
+            assetLevel.value = "";
+        }
+    };
+
+    const updateSlug = () => {
+        const namePart = assetName.value.toLowerCase().replace(/ /g, '-').replace(/\./g, '');
+        const levelPart = assetLevel.value ? `-${assetLevel.value}` : '';
+        assetSlug.value = `${namePart}${levelPart}`;
+    };
+
+    assetName.oninput = () => {
+        const currentType = assetType.value;
+        const entry = Object.values(imagesData[currentType] || {}).find(e => e.name.toLowerCase() === assetName.value.toLowerCase());
+        if (entry) updateAutoLevel(entry);
+        updateSlug();
+        validate();
+    };
+
+    assetLevel.oninput = () => {
+        updateSlug();
         validate();
     };
 

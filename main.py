@@ -58,7 +58,7 @@ BASE_DIR = Path(__file__).resolve().parents[0]
 CACHE_DIR = BASE_DIR / ".cache"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 SUPPORTED_FORMATS = ["jpg", "jpeg", "png", "webp"]
-GITHUB_RAW_BASE = "https://raw.githubusercontent.com/ClashKingInc/ClashKingAssets/main/assets"
+GITHUB_RAW_BASE = "https://raw.githubusercontent.com/killshotttttt/ClashAssets/main/assets"
 
 async def download_from_github(file_path: str) -> bytes:
     url = f"{GITHUB_RAW_BASE}/{file_path}"
@@ -69,8 +69,9 @@ async def download_from_github(file_path: str) -> bytes:
             raise HTTPException(status_code=404, detail=f"File not found on GitHub: {file_path}")
 
 async def get_cached_file(file_path: str) -> Path:
-    # Check local assets first
-    local_asset = BASE_DIR / "assets" / file_path
+    # Check local assets first (strip leading slash to prevent Path joining issues)
+    local_path = file_path.lstrip("/")
+    local_asset = BASE_DIR / "assets" / local_path
     if local_asset.is_file():
         return local_asset
 
@@ -122,6 +123,22 @@ async def add_cache_control_header(request: Request, call_next: Callable):
 
 @app.get("/")
 async def gallery(request: Request):
+    global images, translations
+    
+    # Reload from local disk to catch new uploads
+    try:
+        image_map_path = BASE_DIR / "assets" / "image_map.json"
+        if image_map_path.exists():
+            with open(image_map_path, "r", encoding="utf-8") as f:
+                images = json.load(f)
+        
+        trans_path = BASE_DIR / "assets" / "translations.json"
+        if trans_path.exists():
+            with open(trans_path, "r", encoding="utf-8") as f:
+                translations = json.load(f)
+    except Exception as e:
+        logger.error(f"Failed to reload data for gallery: {e}")
+
     return templates.TemplateResponse(
         "gallery.html", {
             "request": request,
@@ -150,4 +167,6 @@ async def serve_file(file_path: str):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, workers=1)
+    # Disable reload because on Windows it can crash when image_map.json is updated.
+    # We already have manual reloading logic in the gallery route.
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False, workers=1)

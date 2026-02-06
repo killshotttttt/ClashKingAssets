@@ -60,35 +60,51 @@ def process_and_save_image(image_bytes: bytes, asset_type: str, asset_name: str,
     canvas.paste(cropped, ((size - w)//2, (size - h)//2))
 
     # Determine paths
-    base_type = "home-base"
-    if asset_type in ["builder-base", "capital-base"]:
-        base_type = asset_type
-    
-    # Standardize folder name
-    folder_name = asset_name.lower().replace(" ", "-").replace(".", "")
-    out_filename = f"{slug}.png"
-    rel_path = f"/{base_type}/{asset_type}/{folder_name}/{out_filename}"
-    
-    abs_path = ASSETS_DIR / rel_path.lstrip("/")
-    abs_path.parent.mkdir(parents=True, exist_ok=True)
-    canvas.save(abs_path)
-    
-    # Update Map
     image_map = load_image_map()
-    if asset_type not in image_map:
-        image_map[asset_type] = {}
     
-    type_data = image_map[asset_type]
+    # 1. Try to find existing folder from current entries
+    existing_folder = None
+    type_data = image_map.get(asset_type, {})
     entry_id = None
     for eid, info in type_data.items():
         if info.get("name") == asset_name:
             entry_id = eid
-            break
+            # Extract folder from existing levels/icon
+            sample_path = None
+            if "levels" in info and info["levels"]:
+                sample_path = list(info["levels"].values())[0]
+            elif "icon" in info:
+                sample_path = info["icon"]
+            elif "poses" in info and info["poses"]:
+                sample_path = list(info["poses"].values())[0]
             
+            if sample_path:
+                existing_folder = "/".join(sample_path.lstrip("/").split("/")[:-1])
+            break
+
+    if existing_folder:
+        rel_dir = existing_folder
+    else:
+        # Standardize folder name if creating new
+        base_type = "home-base"
+        if asset_type in ["builder-base", "capital-base"]:
+            base_type = asset_type
+        folder_slug = asset_name.lower().replace(" ", "-").replace(".", "")
+        rel_dir = f"{base_type}/{asset_type}/{folder_slug}"
+    
+    out_filename = f"{slug}.png"
+    rel_path = f"/{rel_dir}/{out_filename}"
+    
+    abs_path = ASSETS_DIR / rel_dir
+    abs_path.mkdir(parents=True, exist_ok=True)
+    canvas.save(abs_path / out_filename)
+    
+    # Update Map
     if not entry_id:
         # Generate custom ID for new building
         entry_id = str(random.randint(2000000, 2999999))
         type_data[entry_id] = {"name": asset_name}
+        image_map[asset_type] = type_data
     
     entry = type_data[entry_id]
     if level:

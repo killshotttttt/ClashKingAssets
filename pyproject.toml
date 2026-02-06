@@ -13,6 +13,7 @@ dependencies = [
     "pillow",
     "python-multipart",
     "uvicorn",
+    "watchdog>=6.0.0",
     "zstandard>=0.25.0",
 ]
 
