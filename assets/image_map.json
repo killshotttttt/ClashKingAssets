@@ -59,7 +59,8 @@
         "13": "/home-base/buildings/elixir-collector/elixir-collector-13.png",
         "14": "/home-base/buildings/elixir-collector/elixir-collector-14.png",
         "15": "/home-base/buildings/elixir-collector/elixir-collector-15.png",
-        "16": "/home-base/buildings/elixir-collector/elixir-collector-16.png"
+        "16": "/home-base/buildings/elixir-collector/elixir-collector-16.png",
+        "17": "/home-base/buildings/elixir-collector/elixir-pump-18.png"
       }
     },
     "1000003": {
@@ -104,7 +105,8 @@
         "13": "/home-base/buildings/gold-mine/gold-mine-13.png",
         "14": "/home-base/buildings/gold-mine/gold-mine-14.png",
         "15": "/home-base/buildings/gold-mine/gold-mine-15.png",
-        "16": "/home-base/buildings/gold-mine/gold-mine-16.png"
+        "16": "/home-base/buildings/gold-mine/gold-mine-16.png",
+        "17": "/home-base/buildings/gold-mine/goldmine-17.png"
       }
     },
     "1000005": {
@@ -412,7 +414,8 @@
         "7": "/home-base/buildings/dark-elixir-drill/dark-elixir-drill-7.png",
         "8": "/home-base/buildings/dark-elixir-drill/dark-elixir-drill-8.png",
         "9": "/home-base/buildings/dark-elixir-drill/dark-elixir-drill-9.png",
-        "10": "/home-base/buildings/dark-elixir-drill/dark-elixir-drill-10.png"
+        "10": "/home-base/buildings/dark-elixir-drill/dark-elixir-drill-10.png",
+        "11": "/home-base/buildings/dark-elixir-drill/elixir-pump-18.png"
       }
     },
     "1000024": {
@@ -1105,12 +1108,21 @@
     },
     "1000102": {
       "name": "Super Wizard Tower",
-      "levels": {}
+      "levels": {
+        "1": "/home-base/buildings/super-wizard-tower/wizard-tower-1.png",
+        "2": "/home-base/buildings/super-wizard-tower/wizard-tower-18.png"
+      }
     },
     "2199014": {
       "name": "Defense Wall",
       "levels": {
         "19": "/home-base/buildings/defense-wall/defense-wall-20.png"
+      }
+    },
+    "2934211": {
+      "name": "Elixir Pump",
+      "levels": {
+        "17": "/home-base/buildings/elixir-pump/elixir-pump-17.png"
       }
     }
   },
